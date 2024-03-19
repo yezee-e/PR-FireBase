@@ -84,17 +84,14 @@ export default function PostTweetForm() {
       //firestore Database에 트윗데이터추가
       const doc = await addDoc(collection(db, 'tweets'), {
         tweet, //트윗내용
-        crateAt: Date.now(), //트윗시간
+        createdAt: Date.now(), //트윗시간
         username: user.displayName || 'Anonymous', //트윗유저이름
         userId: user.uid, //유저식별아이디
       });
 
       //storage에 이미지파일 업로드
       if (file) {
-        const locationRef = ref(
-          storage,
-          `tweets/${user.uid}-${user.displayName}/${doc.id}`
-        ); //storage에 저장될 경로 저장
+        const locationRef = ref(storage, `tweets/${user.uid}/${doc.id}`); //storage에 저장될 경로 저장
         const result = await uploadBytes(locationRef, file); //uploadBytes->blob 또는 file 업로드
         const url = await getDownloadURL(result.ref); //getDownloadURL->url을 통해 데이터 다운로드
         await updateDoc(doc, {
